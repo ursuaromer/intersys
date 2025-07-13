@@ -43,8 +43,8 @@
 // //     </Tabs>
 // //   );
 // // }
-// // app/_layout.tsx
-// import { Drawer } from 'expo-router/drawer';
+// app/_layout.tsx
+// import { Drawer } from 'expo-router/drawer';//depedencia que engloba toda los menus
 // import { useFonts } from 'expo-font';
 // import { StatusBar } from 'expo-status-bar';
 
