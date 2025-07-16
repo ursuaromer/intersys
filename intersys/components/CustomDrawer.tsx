@@ -1,21 +1,41 @@
 // components/CustomDrawer.tsx
 import { DrawerContentScrollView } from "@react-navigation/drawer";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-// import { useNavigation } from 'expo-router';
-import { useState } from "react";
+import { View, Text, TouchableOpacity, StyleSheet, Animated } from "react-native";
+import { useState, useRef } from "react";
 import { useRouter } from "expo-router";
+import { LinearGradient } from 'expo-linear-gradient';
+
 const CustomDrawer = (props: any) => {
-  // const navigation = useNavigation();
+  const router = useRouter();
   const [expanded, setExpanded] = useState({
     explorar: false,
     galeria: false,
     aprende: false,
-    juego:false,
+    juego: false,
     acerca: false,
   });
 
+  const animatedValues = useRef({
+    explorar: new Animated.Value(0),
+    galeria: new Animated.Value(0),
+    aprende: new Animated.Value(0),
+    juego: new Animated.Value(0),
+    acerca: new Animated.Value(0),
+  }).current;
+
   const toggle = (key: string) => {
+    const isExpanded = expanded[key];
     setExpanded((prev) => ({ ...prev, [key]: !prev[key] }));
+    
+    Animated.timing(animatedValues[key], {
+      toValue: isExpanded ? 0 : 1,
+      duration: 300,
+      useNativeDriver: false,
+    }).start();
+  };
+
+  const navigateToHome = () => {
+    router.push("/(tabs)");
   };
 
 
@@ -25,49 +45,164 @@ const CustomDrawer = (props: any) => {
       {...props}
       contentContainerStyle={styles.container}
     >
-      {/* Primer seccion */}
-      <Section title="EXPLORAR UNIVERSO" onPress={() => toggle("explorar")} />
-      {expanded.explorar && (
-        <>
-          <SubItem label="Planetas del Sistema Solar" route="/(tabs)/esploraruniverso/planetassistemasolar"  />
-          <SubItem label="Estrellas y Galaxias" route="/(tabs)/esploraruniverso/estrellasygalaxias" />
-          <SubItem label="Telescopios y Observatorios" route="/(tabs)/esploraruniverso/telescopioyobservatorios"/>
-        </>
-      )}
-    {/* Segunda seccion */}
-    <Section title="GALERÍA" onPress={() => toggle("galeria")} />
-      {expanded.galeria && (
-        <>
-          <SubItem label="Astros" />
-          <SubItem label="Planetas" />
-          <SubItem label="Satélites" />
-          <SubItem label="Galaxias" />
-          <SubItem label="Exploraciones Espaciales" />
-        </>
-      )}
-      {/* Tercera seccion */}
-      <Section title="APRENDE CON NOSOTROS" onPress={() => toggle("aprende")} />
-      {expanded.aprende && (
-        <SubItem
-          label="Pregunta y respuesta (Juego)"
-          route="/aprendeconNosotros"
-        />
-      )}
-      {/* Cuarta seccion */}
+      {/* Header con gradiente */}
+      <LinearGradient
+        colors={['#667eea', '#764ba2']}
+        style={styles.header}
+      >
+        <Text style={styles.headerText}>🌌 COSMOS APP</Text>
+      </LinearGradient>
 
-      <Section title="Juego" onPress={() => toggle("juego")} />
-      {expanded.juego && (
-        <SubItem
-          label="Asteroide Storm"
-          route="/(tabs)/juegos/asteroid-storm"
-        />
-      )}
+      {/* Botón de Inicio */}
+      <TouchableOpacity onPress={navigateToHome} style={styles.homeButton}>
+        <LinearGradient
+          colors={['#11998e', '#38ef7d']}
+          style={styles.homeButtonGradient}
+        >
+          <Text style={styles.homeButtonText}>🏠 INICIO</Text>
+        </LinearGradient>
+      </TouchableOpacity>
 
-      {/* Quinta seccion */}
-      <Section title="ACERCA DE" onPress={() => toggle("acerca")} />
-      {expanded.acerca && (
-        <SubItem label="Detalles de la app" route="/acerca" />
-      )}
+      {/* Secciones expandibles */}
+      <Section 
+        title="🌟 EXPLORAR UNIVERSO" 
+        onPress={() => toggle("explorar")} 
+        expanded={expanded.explorar}
+      />
+      <Animated.View style={[
+        styles.submenuContainer,
+        {
+          maxHeight: animatedValues.explorar.interpolate({
+            inputRange: [0, 1],
+            outputRange: [0, 200],
+          }),
+          opacity: animatedValues.explorar,
+        }
+      ]}>
+        {expanded.explorar && (
+          <View style={styles.submenu}>
+            <SubItem 
+              label="Planetas del Sistema Solar" 
+              route="/(tabs)/esploraruniverso/planetassistemasolar"
+              icon="🪐"
+            />
+            <SubItem 
+              label="Estrellas y Galaxias" 
+              route="/(tabs)/esploraruniverso/estrellasygalaxias"
+              icon="⭐"
+            />
+            <SubItem 
+              label="Telescopios y Observatorios" 
+              route="/(tabs)/esploraruniverso/telescopioyobservatorios"
+              icon="🔭"
+            />
+          </View>
+        )}
+      </Animated.View>
+
+      <Section 
+        title="🖼️ GALERÍA" 
+        onPress={() => toggle("galeria")} 
+        expanded={expanded.galeria}
+      />
+      <Animated.View style={[
+        styles.submenuContainer,
+        {
+          maxHeight: animatedValues.galeria.interpolate({
+            inputRange: [0, 1],
+            outputRange: [0, 250],
+          }),
+          opacity: animatedValues.galeria,
+        }
+      ]}>
+        {expanded.galeria && (
+          <View style={styles.submenu}>
+            <SubItem label="Astros" icon="🌟" />
+            <SubItem label="Planetas" icon="🪐" />
+            <SubItem label="Satélites" icon="🛰️" />
+            <SubItem label="Galaxias" icon="🌌" />
+            <SubItem label="Exploraciones Espaciales" icon="🚀" />
+          </View>
+        )}
+      </Animated.View>
+
+      <Section 
+        title="📚 APRENDE CON NOSOTROS" 
+        onPress={() => toggle("aprende")} 
+        expanded={expanded.aprende}
+      />
+      <Animated.View style={[
+        styles.submenuContainer,
+        {
+          maxHeight: animatedValues.aprende.interpolate({
+            inputRange: [0, 1],
+            outputRange: [0, 80],
+          }),
+          opacity: animatedValues.aprende,
+        }
+      ]}>
+        {expanded.aprende && (
+          <View style={styles.submenu}>
+            <SubItem
+              label="Pregunta y respuesta (Juego)"
+              route="/(tabs)/aprendeconnosotros/preguntayrespuesta"
+              icon="🎯"
+            />
+          </View>
+        )}
+      </Animated.View>
+
+      <Section 
+        title="🎮 JUEGOS" 
+        onPress={() => toggle("juego")} 
+        expanded={expanded.juego}
+      />
+      <Animated.View style={[
+        styles.submenuContainer,
+        {
+          maxHeight: animatedValues.juego.interpolate({
+            inputRange: [0, 1],
+            outputRange: [0, 80],
+          }),
+          opacity: animatedValues.juego,
+        }
+      ]}>
+        {expanded.juego && (
+          <View style={styles.submenu}>
+            <SubItem
+              label="Asteroide Storm"
+              route="/(tabs)/juegos/asteroid-storm"
+              icon="☄️"
+            />
+          </View>
+        )}
+      </Animated.View>
+
+      <Section 
+        title="ℹ️ ACERCA DE" 
+        onPress={() => toggle("acerca")} 
+        expanded={expanded.acerca}
+      />
+      <Animated.View style={[
+        styles.submenuContainer,
+        {
+          maxHeight: animatedValues.acerca.interpolate({
+            inputRange: [0, 1],
+            outputRange: [0, 80],
+          }),
+          opacity: animatedValues.acerca,
+        }
+      ]}>
+        {expanded.acerca && (
+          <View style={styles.submenu}>
+            <SubItem 
+              label="Detalles de la app" 
+              route="/acerca"
+              icon="📱"
+            />
+          </View>
+        )}
+      </Animated.View>
     </DrawerContentScrollView>
   );
 };
@@ -75,16 +210,34 @@ const CustomDrawer = (props: any) => {
 const Section = ({
   title,
   onPress,
+  expanded,
 }: {
   title: string;
   onPress: () => void;
+  expanded: boolean;
 }) => (
   <TouchableOpacity onPress={onPress} style={styles.section}>
-    <Text style={styles.sectionText}>{title}</Text>
+    <LinearGradient
+      colors={expanded ? ['#667eea', '#764ba2'] : ['#2c3e50', '#34495e']}
+      style={styles.sectionGradient}
+    >
+      <Text style={styles.sectionText}>{title}</Text>
+      <Text style={[styles.arrow, { transform: [{ rotate: expanded ? '180deg' : '0deg' }] }]}>
+        ▼
+      </Text>
+    </LinearGradient>
   </TouchableOpacity>
 );
 
-const SubItem = ({ label, route }: { label: string; route?: string }) => {
+const SubItem = ({ 
+  label, 
+  route, 
+  icon = "•" 
+}: { 
+  label: string; 
+  route?: string; 
+  icon?: string;
+}) => {
   const router = useRouter();
   return (
     <TouchableOpacity
@@ -93,35 +246,119 @@ const SubItem = ({ label, route }: { label: string; route?: string }) => {
         if (route) router.push(route);
       }}
     >
-      <Text style={styles.subItemText}>{label}</Text>
+      <View style={styles.subItemContent}>
+        <Text style={styles.subItemIcon}>{icon}</Text>
+        <Text style={styles.subItemText}>{label}</Text>
+      </View>
+      <View style={styles.subItemBorder} />
     </TouchableOpacity>
   );
 };
 
-// ESTILOS DEL DRAWER
 const styles = StyleSheet.create({
   container: {
-    padding: 10,
-    backgroundColor: "#000",
+    padding: 0,
+    backgroundColor: "#0a0a0a",
+    minHeight: '100%',
+  },
+  header: {
+    padding: 20,
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  headerText: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  homeButton: {
+    marginHorizontal: 15,
+    marginBottom: 20,
+    borderRadius: 25,
+    overflow: 'hidden',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+  },
+  homeButtonGradient: {
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+  },
+  homeButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
   },
   section: {
-    backgroundColor: "#00f",
-    padding: 12,
-    borderRadius: 8,
-    marginTop: 10,
+    marginHorizontal: 10,
+    marginVertical: 5,
+    borderRadius: 15,
+    overflow: 'hidden',
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+  },
+  sectionGradient: {
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   sectionText: {
     color: "#fff",
     fontWeight: "bold",
-    textAlign: "center",
+    fontSize: 14,
+    flex: 1,
+  },
+  arrow: {
+    color: "#fff",
+    fontSize: 12,
+    fontWeight: "bold",
+  },
+  submenuContainer: {
+    overflow: 'hidden',
+    marginHorizontal: 10,
+  },
+  submenu: {
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    borderRadius: 10,
+    marginTop: 5,
+    marginBottom: 10,
+    backdropFilter: 'blur(10px)',
   },
   subItem: {
-    marginLeft: 16,
-    marginVertical: 6,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  subItemContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  subItemIcon: {
+    fontSize: 16,
+    marginRight: 12,
   },
   subItemText: {
-    color: "#fff",
+    color: "#e0e0e0",
     fontSize: 14,
+    flex: 1,
+  },
+  subItemBorder: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    bottom: 0,
+    width: 3,
+    backgroundColor: 'transparent',
   },
 });
 
