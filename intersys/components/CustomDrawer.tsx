@@ -117,10 +117,10 @@ const CustomDrawer = (props: any) => {
       ]}>
         {expanded.galeria && (
           <View style={styles.submenu}>
-            <SubItem label="Astros" icon="🌟" />
-            <SubItem label="Planetas" icon="🪐" />
-            <SubItem label="Satélites" icon="🛰️" />
-            <SubItem label="Galaxias" icon="🌌" />
+            <SubItem label="Astros" route="/(tabs)/galeria/astros/AstrosGallery" icon="🌟"  />
+            <SubItem label="Planetas" route="/(tabs)/galeria/astros/PlanetsGallery" icon="🪐" />
+            <SubItem label="Satélites" route="/(tabs)/galeria/astros/SatelitesGallery" icon="🛰️" />
+            <SubItem label="Galaxias" route="/(tabs)/galeria/astros/GalaxiesGallery" icon="🌌" />
             <SubItem label="Exploraciones Espaciales" icon="🚀" />
           </View>
         )}
