@@ -50,7 +50,7 @@ const CustomDrawer = (props: any) => {
         colors={['#667eea', '#764ba2']}
         style={styles.header}
       >
-        <Text style={styles.headerText}>🌌 COSMOS APP</Text>
+        <Text style={styles.headerText}>🌌 INTERSYS SPACE</Text>
       </LinearGradient>
 
       {/* Botón de Inicio */}
