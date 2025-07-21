@@ -13,19 +13,36 @@
 // }
 
 
-// app/(tabs)/entretenimiento/_layout.tsx
+// app/(tabs)/juegos/_layout.tsx
+
+
+
+
+
+// import { Stack } from 'expo-router';
+
+// export default function EntretenimientoLayout() {
+//   return (
+//     <Stack
+//       screenOptions={{
+//         headerShown: false, // ✅ Esto sí oculta el encabezado superior del stack local
+//       }}
+//     />
+//   );
+// }
+
+
+
 import { Stack } from 'expo-router';
 
-export default function EntretenimientoLayout() {
+export default function JuegosLayout() {
   return (
-    <Stack
-      screenOptions={{
-        headerShown: false, // ✅ Esto sí oculta el encabezado superior del stack local
-      }}
-    />
+    <Stack>
+      <Stack.Screen name="index" options={{ headerShown: false, title: '🎮 Juegos' }} />
+      <Stack.Screen name="asteroid-storm" options={{ headerShown: false }} />
+    </Stack>
   );
 }
-
 
 
 
