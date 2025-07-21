@@ -59,7 +59,7 @@ const CustomDrawer = (props: any) => {
           colors={['#11998e', '#38ef7d']}
           style={styles.homeButtonGradient}
         >
-          <Text style={styles.homeButtonText}>🏠 INICIO</Text>
+          <Text style={styles.homeButtonText}>INICIO</Text>
         </LinearGradient>
       </TouchableOpacity>
 
@@ -197,7 +197,8 @@ const CustomDrawer = (props: any) => {
           <View style={styles.submenu}>
             <SubItem 
               label="Detalles de la app" 
-              route="/acerca"
+              route="/(tabs)/acerca/acerca"
+        
               icon="📱"
             />
           </View>
