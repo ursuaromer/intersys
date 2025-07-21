@@ -121,7 +121,7 @@ const CustomDrawer = (props: any) => {
             <SubItem label="Planetas" route="/(tabs)/galeria/astros/PlanetsGallery" icon="🪐" />
             <SubItem label="Satélites" route="/(tabs)/galeria/astros/SatelitesGallery" icon="🛰️" />
             <SubItem label="Galaxias" route="/(tabs)/galeria/astros/GalaxiesGallery" icon="🌌" />
-            <SubItem label="Exploraciones Espaciales" icon="🚀" />
+            <SubItem label="Exploraciones Espaciales" route="/(tabs)/galeria/exploracionesespaciales" icon="🚀" />
           </View>
         )}
       </Animated.View>
