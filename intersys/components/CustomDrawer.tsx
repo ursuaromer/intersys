@@ -38,6 +38,8 @@ const CustomDrawer = (props: any) => {
     router.push("/(tabs)");
   };
 
+
+
   return (
     <DrawerContentScrollView
       {...props}
@@ -48,7 +50,7 @@ const CustomDrawer = (props: any) => {
         colors={['#667eea', '#764ba2']}
         style={styles.header}
       >
-        <Text style={styles.headerText}>🌌 COSMOS APP</Text>
+        <Text style={styles.headerText}>🌌 INTERSYS SPACE</Text>
       </LinearGradient>
 
       {/* Botón de Inicio */}
@@ -57,7 +59,7 @@ const CustomDrawer = (props: any) => {
           colors={['#11998e', '#38ef7d']}
           style={styles.homeButtonGradient}
         >
-          <Text style={styles.homeButtonText}>🏠 INICIO</Text>
+          <Text style={styles.homeButtonText}>INICIO</Text>
         </LinearGradient>
       </TouchableOpacity>
 
@@ -195,7 +197,8 @@ const CustomDrawer = (props: any) => {
           <View style={styles.submenu}>
             <SubItem 
               label="Detalles de la app" 
-              route="/acerca"
+              route="/(tabs)/acerca/acerca"
+        
               icon="📱"
             />
           </View>
