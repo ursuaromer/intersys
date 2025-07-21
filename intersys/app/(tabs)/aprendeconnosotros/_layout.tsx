@@ -7,3 +7,4 @@ export const screenOptions = {
 export default function Layout() {
   return <Stack screenOptions={screenOptions} />;
 }
+  
