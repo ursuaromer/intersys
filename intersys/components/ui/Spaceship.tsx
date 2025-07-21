@@ -66,20 +66,50 @@
 
 
 
-import React from 'react';
-import { Image, StyleSheet, Dimensions } from 'react-native';
+// import React from 'react';
+// import { Image, StyleSheet, Dimensions } from 'react-native';
 
-const { height } = Dimensions.get('window');
+// const { height } = Dimensions.get('window');
+
+// type SpaceshipProps = {
+//   x: number;
+// };
+
+// export default function Spaceship({ x }: SpaceshipProps) {
+//   return (
+//     <Image
+//       source={require('@/assets/images/nave.png')} // Usa la ruta correcta
+//       style={[styles.ship, { left: x - 25, top: height - 100 }]}
+//       resizeMode="contain"
+//     />
+//   );
+// }
+
+// const styles = StyleSheet.create({
+//   ship: {
+//     position: 'absolute',
+//     width: 80,
+//     height: 80,
+//   },
+// });
+
+
+
+
+
+import React from 'react';
+import { Image, StyleSheet } from 'react-native';
 
 type SpaceshipProps = {
   x: number;
+  y: number;
 };
 
-export default function Spaceship({ x }: SpaceshipProps) {
+export default function Spaceship({ x, y }: SpaceshipProps) {
   return (
     <Image
-      source={require('@/assets/images/nave.png')} // Usa la ruta correcta
-      style={[styles.ship, { left: x - 25, top: height - 100 }]}
+      source={require('@/assets/images/nave.png')}
+      style={[styles.ship, { left: x, top: y }]}
       resizeMode="contain"
     />
   );
@@ -88,8 +118,10 @@ export default function Spaceship({ x }: SpaceshipProps) {
 const styles = StyleSheet.create({
   ship: {
     position: 'absolute',
-    width: 80,
-    height: 80,
+    width: 120,
+    height: 120,
   },
+  
 });
+
 
