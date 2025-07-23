@@ -35,7 +35,7 @@ const CustomDrawer = (props: any) => {
   };
 
   const navigateToHome = () => {
-    router.push("/(tabs)");
+    router.push("/(tabs)/home");
   };
 
 
