@@ -252,28 +252,35 @@ export default function MeteorGame() {
           isLooping: true,
           volume: 0.5,
         });
+
         const { sound: soundObj2 } = await Audio.Sound.createAsync(ambienteEspacial, {
           isLooping: true,
           volume: 0.3,
         });
 
+        // Verificar si el componente aún está montado
         if (!isMounted) {
           await soundObj1.unloadAsync();
           await soundObj2.unloadAsync();
           return;
         }
 
+        // Guardar referencias globales si las usas (opcional)
         s1 = soundObj1;
         s2 = soundObj2;
+
+        // Guardar en estado para control posterior
         setSound1(soundObj1);
         setSound2(soundObj2);
 
-        await s1.playAsync();
-        await s2.playAsync();
+        // Reproducir ambos sonidos
+        await soundObj1.playAsync();
+        await soundObj2.playAsync();
       } catch (error) {
         console.error('Error al cargar sonidos:', error);
       }
     };
+
 
     loadAndPlay();
 
@@ -321,21 +328,24 @@ export default function MeteorGame() {
       <Lives lives={lives} />
       <Score score={score} />
 
-      <View style={styles.pauseButtonContainer} pointerEvents="auto">
-        <Pressable style={styles.pauseButton} onPress={togglePause}>
-          <Text style={styles.buttonText}>{paused ? '▶️ Reanudar' : '⏸ Pausar'}</Text>
-        </Pressable>
+      {!gameOver && (
+        <View style={styles.pauseButtonContainer} pointerEvents="auto">
+          <Pressable style={styles.pauseButton} onPress={togglePause}>
+            <Text style={styles.buttonText}>{paused ? '▶️ Reanudar' : '⏸ Pausar'}</Text>
+          </Pressable>
 
-        <Pressable
-          style={styles.menuButton}
-          onPress={async () => {
-            await sound1?.unloadAsync();
-            await sound2?.unloadAsync();
-            router.replace('/');
-          }}>
-          <Text style={styles.buttonText}>🏠 Menú</Text>
-        </Pressable>
-      </View>
+          <Pressable
+            style={styles.menuButton}
+            onPress={async () => {
+              await sound1?.unloadAsync();
+              await sound2?.unloadAsync();
+              router.replace('/');
+            }}>
+            <Text style={styles.buttonText}>🏠 Menú</Text>
+          </Pressable>
+        </View>
+      )}
+
 
       <View style={StyleSheet.absoluteFill} {...panResponder.panHandlers} pointerEvents="box-none">
         {meteors.map((m) => (
