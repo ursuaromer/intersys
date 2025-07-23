@@ -199,433 +199,244 @@
 //   },
 // });
 
-
-
-import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  Image,
-  TouchableOpacity,
-  ActivityIndicator,
-  Dimensions,
-  StatusBar,
-  ImageBackground,
-  Alert,
-} from 'react-native';
+// WelcomeScreen.tsx
+import React from 'react';
+import { Text, TouchableOpacity, StatusBar, StyleSheet, View, Dimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useNavigation } from '@react-navigation/native';
 
 const { width, height } = Dimensions.get('window');
 
-/**
- * Componente principal de la pantalla de inicio
- * Muestra la imagen astronómica del día de la NASA
- */
-const HomeScreen = () => {
-  // Estados para manejar los datos de la API
-  const [apodData, setApodData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [imageLoaded, setImageLoaded] = useState(false);
-
-  // Tu API Key de NASA
-  const NASA_API_KEY = 'sEs6pVAG8JlLgfh7fzJcVUiuFgdUcYECZqqWuCeB';
-  const APOD_BASE_URL = 'https://api.nasa.gov/planetary/apod';
-
-  /**
-   * Función para obtener la imagen astronómica del día
-   * Hace una petición GET a la API de NASA APOD
-   */
-  const fetchAPOD = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      const response = await fetch(`${APOD_BASE_URL}?api_key=${NASA_API_KEY}`);
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      setApodData(data);
-    } catch (err) {
-      setError(err.message);
-      console.error('Error fetching APOD:', err);
-    } finally {
-      setLoading(false);
-    }
+const WelcomeScreen = () => {
+  const navigation = useNavigation();
+  
+  const handleContinue = () => {
+    navigation.navigate('home');
   };
-
-  /**
-   * useEffect para cargar los datos cuando el componente se monta
-   */
-  useEffect(() => {
-    fetchAPOD();
-  }, []);
-
-  /**
-   * Función para manejar el retry cuando hay error
-   */
-  const handleRetry = () => {
-    fetchAPOD();
-  };
-
-  /**
-   * Función para manejar cuando la imagen se carga completamente
-   */
-  const handleImageLoad = () => {
-    setImageLoaded(true);
-  };
-
-  /**
-   * Función para mostrar información adicional sobre la imagen
-   */
-  const showImageInfo = () => {
-    if (apodData) {
-      Alert.alert(
-        'Información de la Imagen',
-        `Título: ${apodData.title}\n\nFecha: ${apodData.date}\n\nCopyright: ${apodData.copyright || 'NASA'}`,
-        [{ text: 'OK', style: 'default' }]
-      );
-    }
-  };
-
-  /**
-   * Renderizado del componente de carga
-   */
-  if (loading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <StatusBar barStyle="light-content" backgroundColor="#0a0a0a" />
-        <LinearGradient
-          colors={['#0a0a0a', '#1a1a2e', '#16213e']}
-          style={styles.gradient}
-        >
-          <ActivityIndicator size="large" color="#4a90e2" />
-          <Text style={styles.loadingText}>Cargando imagen del cosmos...</Text>
-        </LinearGradient>
-      </View>
-    );
-  }
-
-  /**
-   * Renderizado del componente de error
-   */
-  if (error) {
-    return (
-      <View style={styles.errorContainer}>
-        <StatusBar barStyle="light-content" backgroundColor="#0a0a0a" />
-        <LinearGradient
-          colors={['#0a0a0a', '#1a1a2e', '#16213e']}
-          style={styles.gradient}
-        >
-          <Text style={styles.errorText}>Error al cargar la imagen</Text>
-          <Text style={styles.errorSubText}>{error}</Text>
-          <TouchableOpacity style={styles.retryButton} onPress={handleRetry}>
-            <Text style={styles.retryButtonText}>Reintentar</Text>
-          </TouchableOpacity>
-        </LinearGradient>
-      </View>
-    );
-  }
-
-  /**
-   * Renderizado principal del componente
-   */
+  
   return (
-    <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#0a0a0a" />
+    <LinearGradient 
+      colors={['#0f0f23', '#1a1a2e', '#16213e', '#0f3460']} 
+      style={styles.container}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+    >
+      <StatusBar barStyle="light-content" backgroundColor="transparent" translucent />
       
-      {/* Header con gradiente */}
-      <LinearGradient
-        colors={['#0a0a0a', 'transparent']}
-        style={styles.header}
-      >
-        <Text style={styles.headerTitle}>NASA Space Explorer</Text>
-        <Text style={styles.headerSubtitle}>Imagen Astronómica del Día</Text>
-      </LinearGradient>
+      {/* Elementos decorativos de fondo */}
+      <View style={styles.backgroundElements}>
+        <View style={[styles.star, styles.star1]} />
+        <View style={[styles.star, styles.star2]} />
+        <View style={[styles.star, styles.star3]} />
+        <View style={[styles.star, styles.star4]} />
+        <View style={[styles.star, styles.star5]} />
+        <View style={[styles.orb, styles.orb1]} />
+        <View style={[styles.orb, styles.orb2]} />
+      </View>
 
-      <ScrollView 
-        style={styles.scrollView}
-        showsVerticalScrollIndicator={false}
-        bounces={false}
-      >
-        {/* Contenedor principal de la imagen */}
-        <View style={styles.imageContainer}>
-          {apodData && (
-            <>
-              {/* Imagen principal con overlay */}
-              <ImageBackground
-                source={{ uri: apodData.url }}
-                style={styles.backgroundImage}
-                onLoad={handleImageLoad}
-                resizeMode="cover"
-              >
-                {/* Overlay con gradiente */}
-                <LinearGradient
-                  colors={['transparent', 'rgba(0,0,0,0.8)']}
-                  style={styles.imageOverlay}
-                />
-                
-                {/* Información sobre la imagen */}
-                <View style={styles.imageInfo}>
-                  <TouchableOpacity 
-                    style={styles.infoButton}
-                    onPress={showImageInfo}
-                  >
-                    <Text style={styles.infoButtonText}>ℹ️</Text>
-                  </TouchableOpacity>
-                </View>
-              </ImageBackground>
-
-              {/* Título y descripción */}
-              <View style={styles.contentContainer}>
-                <Text style={styles.title}>{apodData.title}</Text>
-                <Text style={styles.date}>{apodData.date}</Text>
-                
-                {/* Descripción con scroll */}
-                <ScrollView 
-                  style={styles.descriptionContainer}
-                  showsVerticalScrollIndicator={false}
-                >
-                  <Text style={styles.description}>
-                    {apodData.explanation}
-                  </Text>
-                </ScrollView>
-
-                {/* Copyright si existe */}
-                {apodData.copyright && (
-                  <Text style={styles.copyright}>
-                    © {apodData.copyright}
-                  </Text>
-                )}
-              </View>
-            </>
-          )}
+      {/* Contenido principal */}
+      <View style={styles.content}>
+        <View style={styles.titleContainer}>
+          <Text style={styles.emoji}>🚀</Text>
+          <Text style={styles.title}>Space Explorer</Text>
+          <View style={styles.titleUnderline} />
         </View>
-      </ScrollView>
-
-      {/* Botón flotante para refresh */}
-      <TouchableOpacity 
-        style={styles.refreshButton}
-        onPress={handleRetry}
-      >
-        <Text style={styles.refreshButtonText}>🔄</Text>
-      </TouchableOpacity>
-    </View>
+        
+        <View style={styles.subtitleContainer}>
+          <Text style={styles.subtitle}>
+            Descubre el cosmos con la{' '}
+            <Text style={styles.highlightText}>Imagen Astronómica del Día</Text>
+            {' '}de la NASA
+          </Text>
+          <Text style={styles.description}>
+            Sumérgete en las maravillas del universo, actualizadas diariamente con contenido exclusivo y fascinante.
+          </Text>
+        </View>
+        
+        <TouchableOpacity 
+          style={styles.button} 
+          onPress={handleContinue}
+          activeOpacity={0.8}
+        >
+          <LinearGradient
+            colors={['#4a90e2', '#357abd', '#2563eb']}
+            style={styles.buttonGradient}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+          >
+            <Text style={styles.buttonIcon}>🌌</Text>
+            <Text style={styles.buttonText}>Explorar el Universo</Text>
+          </LinearGradient>
+        </TouchableOpacity>
+        
+        <View style={styles.footer}>
+          <Text style={styles.footerText}>✨ Una experiencia cósmica te espera</Text>
+        </View>
+      </View>
+    </LinearGradient>
   );
 };
 
-/**
- * Estilos del componente
- * Optimizados para modo oscuro
- */
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0a0a0a',
   },
-  
-  // Estilos para estado de carga
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#0a0a0a',
+  backgroundElements: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
   },
-  
-  gradient: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+  star: {
+    position: 'absolute',
+    backgroundColor: '#ffffff',
+    borderRadius: 2,
   },
-  
-  loadingText: {
-    color: '#ffffff',
-    fontSize: 16,
-    marginTop: 20,
-    fontWeight: '300',
+  star1: {
+    width: 3,
+    height: 3,
+    top: '15%',
+    left: '20%',
+    opacity: 0.8,
   },
-  
-  // Estilos para estado de error
-  errorContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#0a0a0a',
-    padding: 20,
+  star2: {
+    width: 2,
+    height: 2,
+    top: '25%',
+    right: '15%',
+    opacity: 0.6,
   },
-  
-  errorText: {
-    color: '#ff6b6b',
-    fontSize: 18,
-    fontWeight: '600',
-    textAlign: 'center',
-    marginBottom: 10,
+  star3: {
+    width: 4,
+    height: 4,
+    top: '35%',
+    left: '80%',
+    opacity: 0.9,
   },
-  
-  errorSubText: {
-    color: '#ffffff',
-    fontSize: 14,
-    textAlign: 'center',
-    marginBottom: 20,
+  star4: {
+    width: 2,
+    height: 2,
+    bottom: '30%',
+    left: '10%',
     opacity: 0.7,
   },
-  
-  retryButton: {
-    backgroundColor: '#4a90e2',
-    paddingHorizontal: 30,
-    paddingVertical: 12,
-    borderRadius: 25,
+  star5: {
+    width: 3,
+    height: 3,
+    bottom: '20%',
+    right: '25%',
+    opacity: 0.8,
   },
-  
-  retryButtonText: {
+  orb: {
+    position: 'absolute',
+    borderRadius: 100,
+    opacity: 0.1,
+  },
+  orb1: {
+    width: 120,
+    height: 120,
+    backgroundColor: '#4a90e2',
+    top: '10%',
+    right: '-10%',
+  },
+  orb2: {
+    width: 80,
+    height: 80,
+    backgroundColor: '#2563eb',
+    bottom: '15%',
+    left: '-5%',
+  },
+  content: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 32,
+    paddingTop: 60,
+  },
+  titleContainer: {
+    alignItems: 'center',
+    marginBottom: 40,
+  },
+  emoji: {
+    fontSize: 48,
+    marginBottom: 16,
+  },
+  title: {
+    fontSize: 36,
     color: '#ffffff',
-    fontSize: 16,
+    fontWeight: '800',
+    textAlign: 'center',
+    letterSpacing: 1,
+    textShadowColor: 'rgba(0, 0, 0, 0.3)',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 4,
+  },
+  titleUnderline: {
+    width: 80,
+    height: 3,
+    backgroundColor: '#4a90e2',
+    marginTop: 12,
+    borderRadius: 2,
+  },
+  subtitleContainer: {
+    alignItems: 'center',
+    marginBottom: 50,
+  },
+  subtitle: {
+    fontSize: 18,
+    color: '#e8e8e8',
+    textAlign: 'center',
+    lineHeight: 26,
+    marginBottom: 16,
     fontWeight: '600',
   },
-  
-  // Estilos del header
-  header: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    zIndex: 10,
-    paddingTop: 50,
-    paddingBottom: 20,
-    paddingHorizontal: 20,
-  },
-  
-  headerTitle: {
-    color: '#ffffff',
-    fontSize: 28,
-    fontWeight: '700',
-    textAlign: 'center',
-    marginBottom: 5,
-  },
-  
-  headerSubtitle: {
+  highlightText: {
     color: '#4a90e2',
-    fontSize: 14,
-    textAlign: 'center',
-    fontWeight: '300',
-  },
-  
-  // Estilos del scroll view
-  scrollView: {
-    flex: 1,
-  },
-  
-  // Estilos del contenedor de imagen
-  imageContainer: {
-    flex: 1,
-  },
-  
-  backgroundImage: {
-    width: width,
-    height: height * 0.6,
-    justifyContent: 'flex-end',
-  },
-  
-  imageOverlay: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: '50%',
-  },
-  
-  imageInfo: {
-    position: 'absolute',
-    top: 100,
-    right: 20,
-  },
-  
-  infoButton: {
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    borderRadius: 20,
-    width: 40,
-    height: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  
-  infoButtonText: {
-    fontSize: 18,
-  },
-  
-  // Estilos del contenido
-  contentContainer: {
-    backgroundColor: '#0a0a0a',
-    paddingHorizontal: 20,
-    paddingTop: 25,
-    paddingBottom: 30,
-  },
-  
-  title: {
-    color: '#ffffff',
-    fontSize: 24,
     fontWeight: '700',
-    marginBottom: 8,
-    lineHeight: 30,
   },
-  
-  date: {
-    color: '#4a90e2',
-    fontSize: 14,
-    marginBottom: 20,
-    fontWeight: '400',
-  },
-  
-  descriptionContainer: {
-    maxHeight: 200,
-    marginBottom: 20,
-  },
-  
   description: {
-    color: '#cccccc',
-    fontSize: 16,
-    lineHeight: 24,
-    fontWeight: '300',
-    textAlign: 'justify',
-  },
-  
-  copyright: {
-    color: '#888888',
-    fontSize: 12,
+    fontSize: 15,
+    color: '#b8b8b8',
     textAlign: 'center',
-    fontStyle: 'italic',
+    lineHeight: 22,
+    maxWidth: width * 0.85,
   },
-  
-  // Botón flotante de refresh
-  refreshButton: {
-    position: 'absolute',
-    bottom: 30,
-    right: 30,
-    backgroundColor: '#4a90e2',
-    borderRadius: 30,
-    width: 60,
-    height: 60,
-    justifyContent: 'center',
+  button: {
+    borderRadius: 32,
+    elevation: 8,
+    shadowColor: '#4a90e2',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    marginBottom: 30,
+  },
+  buttonGradient: {
+    flexDirection: 'row',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
+    justifyContent: 'center',
+    paddingVertical: 18,
+    paddingHorizontal: 40,
+    borderRadius: 32,
   },
-  
-  refreshButtonText: {
-    fontSize: 24,
+  buttonIcon: {
+    fontSize: 20,
+    marginRight: 12,
+  },
+  buttonText: {
     color: '#ffffff',
+    fontSize: 18,
+    fontWeight: '700',
+    letterSpacing: 0.5,
+  },
+  footer: {
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  footerText: {
+    fontSize: 14,
+    color: '#8888aa',
+    fontStyle: 'italic',
+    opacity: 0.8,
   },
 });
 
-export default HomeScreen;
+export default WelcomeScreen;
