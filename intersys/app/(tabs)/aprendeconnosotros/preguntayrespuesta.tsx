@@ -6,9 +6,10 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { Audio } from 'expo-av';
 import { useRouter } from 'expo-router';
+import { useFocusEffect } from '@react-navigation/native';
+
+
 const router = useRouter();
-
-
 const { width } = Dimensions.get('window');
 
 type Question = {
@@ -72,23 +73,18 @@ const SpaceTriviaGame = () => {
         playThroughEarpieceAndroid: false,
       });
 
-      // Cargar sonido de respuesta correcta
       const { sound: correctSnd } = await Audio.Sound.createAsync(
         { uri: 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav' },
         { shouldPlay: false }
       );
       setCorrectSound(correctSnd);
 
-      // Cargar sonido de respuesta incorrecta (más elegante)
-      // Cargar sonido de respuesta incorrecta (nuevo enlace)
       const { sound: wrongSnd } = await Audio.Sound.createAsync(
         { uri: 'https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-fail-notification-946.mp3' },
         { shouldPlay: false }
       );
       setWrongSound(wrongSnd);
 
-
-      // Cargar sonido de resultados finales
       const { sound: finishSnd } = await Audio.Sound.createAsync(
         { uri: 'https://www.soundjay.com/misc/sounds/magic-chime-02.wav' },
         { shouldPlay: false }
@@ -113,7 +109,7 @@ const SpaceTriviaGame = () => {
           sound = finishSound;
           break;
       }
-      
+
       if (sound) {
         await sound.replayAsync();
       }
@@ -153,6 +149,12 @@ const SpaceTriviaGame = () => {
     fetchQuestions();
   }, []);
 
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchQuestions(); // Reinicia preguntas al volver a la pantalla
+    }, [])
+  );
+
   const handleAnswer = (i: number) => {
     setSelected(i);
     Animated.sequence([
@@ -163,10 +165,7 @@ const SpaceTriviaGame = () => {
     setTimeout(() => {
       setShowResult(true);
       const isCorrect = questions[current]?.correctAnswer === i;
-      
-      // Reproducir sonido según si es correcto o no
       playSound(isCorrect ? 'correct' : 'wrong');
-      
       if (isCorrect) {
         setScore(prev => prev + 1);
       }
@@ -180,13 +179,12 @@ const SpaceTriviaGame = () => {
       setShowResult(false);
     } else {
       setShowScore(true);
-      // Reproducir sonido de finalización
       playSound('finish');
     }
   };
 
   const restart = () => {
-    fetchQuestions(); // vuelve a cargar
+    fetchQuestions();
   };
 
   if (loading || !questions[current]) {
@@ -218,50 +216,63 @@ const SpaceTriviaGame = () => {
     );
   }
 
-
-
   const q = questions[current];
 
   return (
     <LinearGradient colors={['#0B1426', '#1A2B4C']} style={styles.container}>
-      <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.counter}>Pregunta {current + 1} de {questions.length}</Text>
-        <Text style={styles.question}>{q.question}</Text>
+      <TouchableOpacity
+        onPress={() => router.replace('/')}
+        style={styles.exitButton}
+        activeOpacity={0.8}
+      >
+        <Text style={styles.exitButtonText}>Salir</Text>
+      </TouchableOpacity>
 
-        {q.image && <Image source={{ uri: q.image }} style={styles.image} />}
+      <View style={{ flex: 1 }}>
 
-        {q.options.map((opt, i) => (
-          <TouchableOpacity
-            key={i}
-            style={[
-              styles.option,
-              selected === i && styles.selected,
-              showResult && i === q.correctAnswer && styles.correct,
-              showResult && selected === i && i !== q.correctAnswer && styles.incorrect
-            ]}
-            onPress={() => !showResult && handleAnswer(i)}
-            disabled={showResult}
-          >
-            <Text style={styles.optionText}>{opt}</Text>
-          </TouchableOpacity>
-        ))}
+        <ScrollView contentContainerStyle={styles.content}>
+          <Text style={styles.counter}>Pregunta {current + 1} de {questions.length}</Text>
+          <Text style={styles.question}>{q.question}</Text>
 
-        {showResult && (
-          <View style={styles.explanation}>
-            <Text style={styles.explanationText}>{q.explanation}</Text>
-            <TouchableOpacity style={styles.button} onPress={nextQuestion}>
-              <Text style={styles.buttonText}>{current + 1 < questions.length ? 'Siguiente' : 'Ver resultados'}</Text>
+          {q.image && <Image source={{ uri: q.image }} style={styles.image} />}
+
+          {q.options.map((opt, i) => (
+            <TouchableOpacity
+              key={i}
+              style={[
+                styles.option,
+                selected === i && styles.selected,
+                showResult && i === q.correctAnswer && styles.correct,
+                showResult && selected === i && i !== q.correctAnswer && styles.incorrect
+              ]}
+              onPress={() => !showResult && handleAnswer(i)}
+              disabled={showResult}
+            >
+              <Text style={styles.optionText}>{opt}</Text>
             </TouchableOpacity>
-          </View>
-        )}
-      </ScrollView>
+          ))}
+
+          {showResult && (
+            <View style={styles.explanation}>
+              <Text style={styles.explanationText}>{q.explanation}</Text>
+              <TouchableOpacity style={styles.button} onPress={nextQuestion}>
+                <Text style={styles.buttonText}>{current + 1 < questions.length ? 'Siguiente' : 'Ver resultados'}</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </ScrollView>
+      </View>
     </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  content: { padding: 20 },
+  content: {
+    padding: 20,
+    paddingTop: 80, // para que no choque con el botón Salir
+  },
+
   centered: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#0B1426' },
   loadingText: { color: '#FFF', marginTop: 15, fontSize: 16 },
   title: { color: '#FFF', fontSize: 28, marginBottom: 20 },
@@ -283,23 +294,23 @@ const styles = StyleSheet.create({
   optionText: { color: '#FFF', fontSize: 16, textAlign: 'center' },
   explanation: { marginTop: 20, backgroundColor: '#1A2B4C', padding: 15, borderRadius: 10 },
   explanationText: { color: '#FFF', textAlign: 'center', marginBottom: 15 },
-  
-  
+
   button: {
-    backgroundColor: '#1A2B4C',
-    paddingVertical: 14,
-    paddingHorizontal: 24,
-    borderRadius: 12,
-    alignItems: 'center',
-    width: '80%',
-    alignSelf: 'center',
-    marginVertical: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 5,
-    elevation: 5,
-  },
+  backgroundColor: '#4A90E2', // Color azul claro visible
+  paddingVertical: 14,
+  paddingHorizontal: 24,
+  borderRadius: 12,
+  alignItems: 'center',
+  width: '80%',
+  alignSelf: 'center',
+  marginVertical: 10,
+  shadowColor: '#000',
+  shadowOffset: { width: 0, height: 4 },
+  shadowOpacity: 0.3,
+  shadowRadius: 5,
+  elevation: 6,
+},
+
 
   buttonMenu: {
     backgroundColor: '#D9534F',
@@ -322,6 +333,33 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
     letterSpacing: 1,
+  },
+
+  
+
+  exitButton: {
+    position: 'absolute',
+    top: 40,
+    left: 20,
+    backgroundColor: '#D9534F',
+    paddingVertical: 6,
+    paddingHorizontal: 18,
+    borderRadius: 20,
+    zIndex: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 4,
+    borderWidth: 1,
+    borderColor: '#fff',
+  },
+
+  exitButtonText: {
+    color: '#FFF',
+    fontSize: 15,
+    fontWeight: '700',
+    letterSpacing: 0.5,
   },
 
 });
