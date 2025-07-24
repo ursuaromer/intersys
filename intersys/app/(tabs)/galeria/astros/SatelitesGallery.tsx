@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import Stack from 'expo-router';
+import {Stack} from 'expo-router';
 
 const { width, height } = Dimensions.get('window');
 
@@ -260,7 +260,8 @@ const SatellitesGallery = () => {
 
   return (
     <> 
-     <Stack.Screen options={{ title: "", headerShown: true }} />
+          <Stack.Screen options={{ title: "Detalles de la App", headerShown: true }} />
+
        <SafeAreaView style={styles.container}>
       <LinearGradient
         colors={['#0c0c0c', '#1a1a1a']}
