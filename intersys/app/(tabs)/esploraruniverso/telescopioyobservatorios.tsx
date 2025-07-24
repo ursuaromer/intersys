@@ -15,6 +15,7 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient'; // Si usas Expo
 // import LinearGradient from 'react-native-linear-gradient'; // Si usas React Native CLI
+import { Stack } from 'expo-router';
 
 const { width, height } = Dimensions.get('window');
 
@@ -23,6 +24,8 @@ const { width, height } = Dimensions.get('window');
  * Utiliza la API de NASA para obtener imágenes y datos relevantes
  */
 const TelescopiosObservatorios = () => {
+  // 
+  
   // Estados para manejar los datos y la interfaz
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -257,6 +260,9 @@ const TelescopiosObservatorios = () => {
   }
 
   return (
+    <>
+           <Stack.Screen options={{ title: "Telescopios y Observatorios", headerShown: true }} />
+
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#0a0a0a" />
       
@@ -329,7 +335,10 @@ const TelescopiosObservatorios = () => {
         )}
       </ScrollView>
     </SafeAreaView>
+    </>
+
   );
+
 };
 
 // Estilos para el componente con tema oscuro

@@ -1,8 +1,9 @@
 // components/CustomDrawer.tsx
 import { DrawerContentScrollView } from "@react-navigation/drawer";
-import { View, Text, TouchableOpacity, StyleSheet, Animated } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, Animated, Image } from "react-native";
 import { useState, useRef } from "react";
 import { useRouter } from "expo-router";
+import tw from 'twrnc';
 import { LinearGradient } from 'expo-linear-gradient';
 
 const CustomDrawer = (props: any) => {
@@ -34,11 +35,27 @@ const CustomDrawer = (props: any) => {
     }).start();
   };
 
-  const navigateToHome = () => {
-    router.push("/(tabs)/home");
+  // ✅ SOLUCIÓN MEJORADA: Navegación específica para Expo Router
+  const navigateToScreen = (screenName: string) => {
+    // Cerrar el drawer antes de navegar
+    props.navigation?.closeDrawer();
+    
+    // MÚLTIPLES ESTRATEGIAS para evitar mostrar rutas:
+    
+    // Estrategia 1: Usar navigate con reset del stack
+    try {
+      router.navigate(screenName);
+    } catch (error) {
+      // Fallback: usar push si navigate falla
+      router.push(screenName);
+    }
   };
 
-
+  const navigateToHome = () => {
+    props.navigation?.closeDrawer();
+    // Usar diferentes estrategias según la situación
+    router.navigate("/(tabs)/home");
+  };
 
   return (
     <DrawerContentScrollView
@@ -47,10 +64,14 @@ const CustomDrawer = (props: any) => {
     >
       {/* Header con gradiente */}
       <LinearGradient
-        colors={['#667eea', '#764ba2']}
+        colors={['#000000ff', '#000000ff']}
         style={styles.header}
       >
-        <Text style={styles.headerText}>🌌 INTERSYS SPACE</Text>
+        <Image
+          source={require('@/assets/images/intersys.png')}
+          style={tw`w-32 h-32 mb-4`}
+          resizeMode="contain"
+        />
       </LinearGradient>
 
       {/* Botón de Inicio */}
@@ -81,19 +102,20 @@ const CustomDrawer = (props: any) => {
       ]}>
         {expanded.explorar && (
           <View style={styles.submenu}>
+            {/* ✅ SOLUCIÓN 2: Pasar la función de navegación como prop */}
             <SubItem 
               label="Planetas del Sistema Solar" 
-              route="/(tabs)/esploraruniverso/planetassistemasolar"
+              onPress={() => navigateToScreen("/(tabs)/esploraruniverso/planetassistemasolar")}
               icon="🪐"
             />
             <SubItem 
               label="Estrellas y Galaxias" 
-              route="/(tabs)/esploraruniverso/estrellasygalaxias"
+              onPress={() => navigateToScreen("/(tabs)/esploraruniverso/estrellasygalaxias")}
               icon="⭐"
             />
             <SubItem 
               label="Telescopios y Observatorios" 
-              route="/(tabs)/esploraruniverso/telescopioyobservatorios"
+              onPress={() => navigateToScreen("/(tabs)/esploraruniverso/telescopioyobservatorios")}
               icon="🔭"
             />
           </View>
@@ -117,11 +139,31 @@ const CustomDrawer = (props: any) => {
       ]}>
         {expanded.galeria && (
           <View style={styles.submenu}>
-            <SubItem label="Astros" route="/(tabs)/galeria/astros/AstrosGallery" icon="🌟"  />
-            <SubItem label="Planetas" route="/(tabs)/galeria/astros/PlanetsGallery" icon="🪐" />
-            <SubItem label="Satélites" route="/(tabs)/galeria/astros/SatelitesGallery" icon="🛰️" />
-            <SubItem label="Galaxias" route="/(tabs)/galeria/astros/GalaxiesGallery" icon="🌌" />
-            <SubItem label="Exploraciones Espaciales" route="/(tabs)/galeria/exploracionesespaciales" icon="🚀" />
+            <SubItem 
+              label="Astros" 
+              onPress={() => navigateToScreen("/(tabs)/galeria/astros/AstrosGallery")} 
+              icon="🌟" 
+            />
+            <SubItem 
+              label="Planetas" 
+              onPress={() => navigateToScreen("/(tabs)/galeria/astros/PlanetsGallery")} 
+              icon="🪐" 
+            />
+            <SubItem 
+              label="Satélites" 
+              onPress={() => navigateToScreen("/(tabs)/galeria/astros/SatelitesGallery")} 
+              icon="🛰️" 
+            />
+            <SubItem 
+              label="Galaxias" 
+              onPress={() => navigateToScreen("/(tabs)/galeria/astros/GalaxiesGallery")} 
+              icon="🌌" 
+            />
+            <SubItem 
+              label="Exploraciones Espaciales" 
+              onPress={() => navigateToScreen("/(tabs)/galeria/exploracionesespaciales")} 
+              icon="🚀" 
+            />
           </View>
         )}
       </Animated.View>
@@ -145,7 +187,7 @@ const CustomDrawer = (props: any) => {
           <View style={styles.submenu}>
             <SubItem
               label="Pregunta y respuesta (Juego)"
-              route="/(tabs)/aprendeconnosotros/preguntayrespuesta"
+              onPress={() => navigateToScreen("/(tabs)/aprendeconnosotros/preguntayrespuesta")}
               icon="🎯"
             />
           </View>
@@ -171,7 +213,7 @@ const CustomDrawer = (props: any) => {
           <View style={styles.submenu}>
             <SubItem
               label="Asteroide Storm"
-              route="/(tabs)/juegos/asteroid-storm"
+              onPress={() => navigateToScreen("/(tabs)/juegos/asteroid-storm")}
               icon="☄️"
             />
           </View>
@@ -197,8 +239,7 @@ const CustomDrawer = (props: any) => {
           <View style={styles.submenu}>
             <SubItem 
               label="Detalles de la app" 
-              route="/(tabs)/acerca/acerca"
-        
+              onPress={() => navigateToScreen("/(tabs)/acerca/acerca")}
               icon="📱"
             />
           </View>
@@ -230,22 +271,20 @@ const Section = ({
   </TouchableOpacity>
 );
 
+// ✅ SOLUCIÓN 3: Refactorizar SubItem para usar onPress en lugar de route
 const SubItem = ({ 
   label, 
-  route, 
+  onPress,
   icon = "•" 
 }: { 
   label: string; 
-  route?: string; 
+  onPress: () => void;
   icon?: string;
 }) => {
-  const router = useRouter();
   return (
     <TouchableOpacity
       style={styles.subItem}
-      onPress={() => {
-        if (route) router.push(route);
-      }}
+      onPress={onPress}
     >
       <View style={styles.subItemContent}>
         <Text style={styles.subItemIcon}>{icon}</Text>

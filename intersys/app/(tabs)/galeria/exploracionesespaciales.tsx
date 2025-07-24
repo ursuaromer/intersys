@@ -15,6 +15,7 @@ import {
   SafeAreaView,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Stack } from 'expo-router';
 
 const { width, height } = Dimensions.get('window');
 const API_KEY = 'DEMO_KEY'; // Cambiado por seguridad
@@ -304,6 +305,9 @@ const SpaceExplorationGallery = () => {
   );
 
   return (
+    <>
+   <Stack.Screen options={{ title: "", headerShown: true }}/>
+
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#0f172a" />
       
@@ -393,6 +397,7 @@ const SpaceExplorationGallery = () => {
         </View>
       </Modal>
     </SafeAreaView>
+    </>
   );
 };
 
