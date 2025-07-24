@@ -18,6 +18,7 @@ import {
   PanResponder,
   SafeAreaView,
 } from 'react-native';
+import { Stack } from 'expo-router';
 
 interface AstroItem {
   date: string;
@@ -210,6 +211,9 @@ const AstrosGallery = () => {
     const hasError = imageLoadErrors.has(item.date);
     
     return (
+      <>
+             <Stack.Screen options={{ title: "", headerShown: true }} />
+
       <Animated.View 
         style={[
           styles.astroItem, 
@@ -285,6 +289,7 @@ const AstrosGallery = () => {
           </View>
         </TouchableOpacity>
       </Animated.View>
+      </>
     );
   };
 

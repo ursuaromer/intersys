@@ -16,6 +16,7 @@ import {
   Alert,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Stack } from 'expo-router';
 
 const { width, height } = Dimensions.get('window');
 
@@ -98,6 +99,7 @@ const HomeScreen = () => {
    */
   if (loading) {
     return (
+
       <View style={styles.loadingContainer}>
         <StatusBar barStyle="light-content" backgroundColor="#0a0a0a" />
         <LinearGradient
@@ -136,6 +138,9 @@ const HomeScreen = () => {
    * Renderizado principal del componente
    */
   return (
+    <>
+         <Stack.Screen options={{ title: "", headerShown: true }} />
+    
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#0a0a0a" />
       
@@ -216,6 +221,7 @@ const HomeScreen = () => {
         <Text style={styles.refreshButtonText}>🔄</Text>
       </TouchableOpacity>
     </View>
+    </>
   );
 };
 

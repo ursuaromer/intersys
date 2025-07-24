@@ -15,6 +15,7 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
+import { Stack } from 'expo-router';
 
 const { width, height } = Dimensions.get('window');
 
@@ -219,10 +220,13 @@ const SpaceGalleryComponent = () => {
   }
 
   return (
+    <>
+           <Stack.Screen options={{ title: "Estrellas y galaxias", headerShown: true }} />
+
     <LinearGradient
       colors={['#0a0a0a', '#1a1a2e', '#16213e']}
       style={styles.container}
-    >
+    > 
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Galaxias y Estrellas</Text>
@@ -249,6 +253,7 @@ const SpaceGalleryComponent = () => {
       {/* Modal de detalles */}
       <DetailModal />
     </LinearGradient>
+    </>
   );
 };
 

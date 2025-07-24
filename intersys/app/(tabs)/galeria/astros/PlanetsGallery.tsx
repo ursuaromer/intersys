@@ -17,7 +17,7 @@ import {
     SafeAreaView,
     useWindowDimensions,
 } from 'react-native';
-
+import { Stack } from 'expo-router';
 interface Planet {
     id: string;
     name: string;
@@ -480,6 +480,8 @@ const PlanetsGallery = () => {
         });
 
         return (
+            <>
+             <Stack.Screen options={{ title: "", headerShown: true }} />
             <Animated.View
                 style={[
                     styles.planetItem,
@@ -541,6 +543,7 @@ const PlanetsGallery = () => {
                     </View>
                 </TouchableOpacity>
             </Animated.View>
+            </>
         );
     };
 

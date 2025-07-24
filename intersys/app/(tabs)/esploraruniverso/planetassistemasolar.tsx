@@ -14,6 +14,7 @@ import {
   Modal,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Stack } from 'expo-router';
 
 const { width, height } = Dimensions.get('window');
 
@@ -262,6 +263,8 @@ const SolarSystemPlanets = () => {
     const animationDelay = index * 200;
     
     return (
+          <>
+       <Stack.Screen options={{ title: "Planetas del Sistema Solar", headerShown: true }} />
       <Animated.View
         style={[
           styles.planetCard,
@@ -295,6 +298,7 @@ const SolarSystemPlanets = () => {
           </LinearGradient>
         </TouchableOpacity>
       </Animated.View>
+      </>
     );
   };
 

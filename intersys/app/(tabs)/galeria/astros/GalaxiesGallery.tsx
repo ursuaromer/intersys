@@ -14,6 +14,7 @@ import {
   ScrollView,
 } from 'react-native';
 
+import { Stack } from 'expo-router';
 const { width, height } = Dimensions.get('window');
 
 type GalaxyItem = {
@@ -114,6 +115,8 @@ export default function GalaxiesGallery() {
   );
 
   return (
+    <>
+     <Stack.Screen options={{ title: "", headerShown: true }} />
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
         <Text style={styles.header}>🌌 Galaxia</Text>
@@ -142,6 +145,7 @@ export default function GalaxiesGallery() {
         />
       )}
     </SafeAreaView>
+    </>
   );
 }
 
